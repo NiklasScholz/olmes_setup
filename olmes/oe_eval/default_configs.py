@@ -30,6 +30,9 @@ MODEL_DEFAULTS = {
     "process_output": None,
     "custom_kwargs": None,  # Custom kwargs for model used in special cases
     "api_base_url": None,  # Used for litellm models
+    "enable_thinking": None,
+    "chat_template_args": None,
+    "think_end_token": None
 }
 
 TASK_DEFAULTS = {
