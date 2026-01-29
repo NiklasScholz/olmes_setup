@@ -222,8 +222,8 @@ def convert_chat_instance(model, ins, chat_template=None):
             # We only use templates that don't rely on tokenizer
             context = CHAT_TEMPLATES[chat_template](messages, tokenizer=None)  # type: ignore
         else:
-            context = model.tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
+            context = model.apply_chat_template(
+                messages
             )
         ins.request.context = context + assistant_prefix
         if not assistant_prefix and hasattr(ins.request, "continuation"):
@@ -307,6 +307,7 @@ def process_eval_args(args_dict: dict) -> dict:
                     del model_args_dict[key]
         model_config.update(model_args_dict)
     # for single-token continuation MC tasks, vllm-for-mc enables a faster scoring option through vllm
+    logger.info(f"Model Config: {model_config}")
     vllm_for_mc = args_dict.pop("vllm_for_mc")
     if vllm_for_mc:
         if model_config["model_type"] != "vllm":
@@ -759,8 +760,8 @@ def run_eval(args_dict: dict):
                 # We only use templates that don't rely on tokenizer
                 chat_template_fn = lambda x: CHAT_TEMPLATES[chat_template](x, None)  # type: ignore # noqa: E731
             else:
-                chat_template_fn = lambda x: eval_model.tokenizer.apply_chat_template(  # type: ignore # noqa: E731
-                    x, tokenize=False, add_generation_prompt=True
+                chat_template_fn = lambda x: eval_model.apply_chat_template(  # type: ignore # noqa: E731
+                    x
                 )  # type: ignore
             task._chat_template_fn = chat_template_fn  # type: ignore
         eval_requests_raw = None

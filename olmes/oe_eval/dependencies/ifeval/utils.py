@@ -3,7 +3,7 @@ import logging
 from typing import Dict, Optional, Union
 
 from oe_eval.dependencies.ifeval import instructions_registry
-from olmes.oe_eval.configs import utils
+from lm_eval import utils
 
 eval_logger = getattr(utils, "eval_logger", None) or logging.getLogger("lm-eval")
 
