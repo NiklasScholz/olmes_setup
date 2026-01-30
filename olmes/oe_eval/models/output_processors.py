@@ -34,19 +34,20 @@ def post_process_gpt_oss(output: dict):
     if reasoning_match:
         updates["reasoning_content"] = reasoning_match.group(1).strip()
 
-    # Extract final answer in <|channel|>final ... <|message|>
-    answer_match = re.search(
-        r"(?ms)<\|channel\|>final\s*(.*?)\s*<\|message\|>", continuation
+    # Extract final answer: everything after <|channel|>final<|message|>
+    final_match = re.search(
+        r"(?ms)<\|channel\|>final<\|message\|>(.*)", continuation
     )
-    if answer_match:
-        updates["continuation"] = answer_match.group(1).strip()
+    if final_match:
+        updates["continuation"] = final_match.group(1).strip()
     else:
-        # fallback: if no final found, keep the original text minus reasoning
+        # fallback: remove analysis block
         answer = re.sub(r"(?ms)<\|channel\|>analysis.*?<\|end\|>", "", continuation)
         updates["continuation"] = answer.strip()
 
     output.update(updates)
     return output
+
 
 
 def post_process_qwen(output: dict):
